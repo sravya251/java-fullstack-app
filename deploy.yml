@@ -1,7 +1,7 @@
 # ================= BACKEND DEPLOYMENT =================
 
 - name: Deploy Backend App
-  hosts: backend-db
+  hosts: backend
   become: yes
 
   vars:
@@ -18,6 +18,14 @@
           - git
           - docker
         state: present
+    
+    - name: Ensure backend log directory exists 
+      file:
+        path: /var/log/global
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
 
     - name: Start and enable Docker
       service:
@@ -59,7 +67,7 @@
 # ================= FRONTEND DEPLOYMENT =================
 
 - name: Rebuild and redeploy Frontend App
-  hosts: frontend-db
+  hosts: frontend
   become: yes
 
   vars:
@@ -67,7 +75,7 @@
     app_dir: /opt/app
     project_dir: "{{ app_dir }}/ToDo-Full-Stack-App"
     frontend_port_host: 3000
-    backend_proxy_url: "http://13.54.230.169:8081"
+    backend_proxy_url: "http://13.233.123.11:8081"
 
   tasks:
     - name: Install required packages
